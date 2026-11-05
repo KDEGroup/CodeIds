@@ -1,0 +1,67 @@
+# sample_n = 500
+# log_level = "INFO"
+
+[benchmark]
+# name = "cceval"
+# repos_path = "cache/benchmark/cceval/raw_data"
+# benchmark_path = "cache/benchmark/cceval/python/line_completion.jsonl"
+
+name = "recceval"
+repos_path = "cache/benchmark/ReccEval/Source_Code"
+benchmark_path = "cache/benchmark/ReccEval/metadata.jsonl"
+
+[retrieve]
+output_file = "cache/recceval/retrieval/full-limit-none-usage-100ms-usage-5-context-3-modelfilter-local-qwencoder25_05b-k20-l5-sparse-10-w6-o3.json"
+use_usage = true
+max_usage_n = 5
+usage_context_lines = 3
+
+use_usage_analysis = true
+use_usage_ast = true
+
+use_sparse = true
+sparse_lask_k = 3
+sparse_window_size = 6
+sparse_overlap = 3
+sparse_n = 10
+
+static_analysis_time_limit_ms = 1400
+# max_completion_n = 50
+max_static_usage_time_ms = 20
+
+[retrieve.model_completion_filter]
+enable = true
+top_k = 20
+model_name = "Qwen2.5-Coder-0.5B"
+api_url = "http://localhost:8000/v1"
+api_key = "sk-xxx"
+max_code_lines = 3
+
+[build_prompt]
+use_retrieve_file = "cache/recceval/retrieval/full-limit-none-usage-100ms-usage-5-context-3-modelfilter-local-qwencoder25_05b-k20-l5-sparse-10-w6-o3.json"
+output_file = "cache/recceval/prompt/full-limit-none-usage-100ms-modelfilter-local-qwencoder25_05b-k20-l5-eachusage-2-total-10-rerank-marco-last-3-sparse-n10-w6-o3-qwen2.5-coder.json"
+enable_id_info = true
+enable_usage_retrieval = true
+enable_sparse_retrieval = true
+
+use_each_usage_n = 2
+use_total_usage_n = 10
+enable_usage_rerank = true
+usage_rerank_query_last_k = 3
+rerank_model = "/pathto/ms-marco-MiniLM-L6-v2"
+use_sparse_n = 10
+
+max_token_n = 2000
+tokenizer_path_or_name = "/pathto/Qwen2.5-Coder-7B"
+
+[inference]
+use_prompt_file = "cache/recceval/prompt/full-limit-none-usage-100ms-modelfilter-local-qwencoder25_05b-k20-l5-eachusage-2-total-10-rerank-marco-last-3-sparse-n10-w6-o3-qwen2.5-coder.json"
+output_file = "cache/recceval/inference/full-limit-none-usage-100ms-modelfilter-local-qwencoder25_05b-k20-l5-eachusage-2-total-10-rerank-marco-last-3-sparse-n10-w6-o3-qwen2.5-coder-7b.json"
+api_url = "http://localhost:8000/v1"
+api_key = "sk-xxx"
+model = "Qwen2.5-Coder-7B"
+max_new_tokens = 48
+
+[evaluation]
+use_inference_file = "cache/recceval/inference/full-limit-none-usage-100ms-modelfilter-local-qwencoder25_05b-k20-l5-eachusage-2-total-10-rerank-marco-last-3-sparse-n10-w6-o3-qwen2.5-coder-7b.json"
+output_file = "cache/recceval/evaluation/full-limit-none-usage-100ms-modelfilter-local-qwencoder25_05b-k20-l5-eachusage-2-total-10-rerank-marco-last-3-sparse-n10-w6-o3-qwen2.5-coder-7b.json"
